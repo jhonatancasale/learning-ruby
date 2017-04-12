@@ -12,7 +12,7 @@ puts "Before: a:#{a} and b:#{b} "
 def bad_swap(a, b)
   tmp = a
   a = b
-  b = temp
+  b = tmp
 end
 puts "After: a:#{a} and b:#{b} "
 
@@ -22,3 +22,25 @@ def add(*args)
 end
 
 puts add 1, 1, 1, 23
+def tell_the_truth(options={})
+
+  if options[:profession] == :lawyer
+    'it could be believed that this is almost certainly not false'
+  else
+    true
+  end
+end
+
+puts tell_the_truth
+puts tell_the_truth( :profession => :lawyer )
+
+# param passage
+def call_block(&block)
+  block.call
+end
+
+def pass_block(&block)
+  call_block(&block)
+end
+
+pass_block {puts 'Hello, block'}
