@@ -27,3 +27,12 @@ puts "Consonants: " + full_name.count("^aeiou").to_s
 
 puts full_name.start_with?('Jhonatan')
 puts "Index : " + full_name.index('Casale').to_s
+
+# Simbols
+puts 'string'.object_id
+puts 'string'.object_id
+puts 'Same? ' + ('string'.object_id == 'string'.object_id).to_s
+
+puts :string.object_id
+puts :string.object_id
+puts 'Same? ' + (:string.object_id == :string.object_id).to_s
