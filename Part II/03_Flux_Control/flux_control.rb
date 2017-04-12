@@ -61,3 +61,10 @@ begin
 rescue ArgumentError
   puts "That is an impossible boudary"
 end
+#
+#C and C++ programmers take note 0 is true!!!
+puts 'This appears to be true.' if 0
+
+puts 'This appears to be true.' if 1
+puts 'This appears to be true.' if true
+puts 'This appears to be true.' if false
