@@ -16,4 +16,9 @@ def bad_swap(a, b)
 end
 puts "After: a:#{a} and b:#{b} "
 
+# kind a functional
+def add(*args)
+  args.reduce(0){ |result, item| result + item}
+end
 
+puts add 1, 1, 1, 23
