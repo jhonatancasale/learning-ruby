@@ -42,3 +42,14 @@ end
 (0..5).each do |i|
   puts "# #{i}"
 end
+
+# Fixnum times loop
+5.times do
+  puts "Hello World!"
+end
+
+# or
+var = 5
+var.times do
+  puts "Hello World!"
+end
