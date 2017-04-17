@@ -8,7 +8,12 @@ some interpolation #{42 + 23}
 and done \n\n
 EOM
 
+another_multiline_string = %Q{'This is another
+multiline_string, using quotation semantic
+cool'}
+
 puts multiline_string
+puts another_multiline_string
 
 first_name = "Jhonatan"
 last_name = "Casale"
@@ -36,3 +41,11 @@ puts 'Same? ' + ('string'.object_id == 'string'.object_id).to_s
 puts :string.object_id
 puts :string.object_id
 puts 'Same? ' + (:string.object_id == :string.object_id).to_s
+
+# String -> simbol
+test = "red_flag".to_sym
+puts test
+
+# Symbol -> string
+another_test = :blue_flag.to_s
+puts another_test
