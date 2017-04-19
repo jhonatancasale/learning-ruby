@@ -136,3 +136,87 @@ puts Roman.X
 puts Roman.XC
 puts Roman.XII
 puts Roman.X
+
+
+class Person
+  def initialize (name, age) # constructor
+    @name = name
+    @age = age
+  end
+
+  def get_info
+    @additional_info = "Interesting" # instance variable
+    "Name: #{@name}, age: #{@age}"
+  end
+end
+
+person0 = Person.new('Bruce', 42)
+person1 = Person.new('Joe', 23)
+
+p person0.instance_variables # => [:@name, :@age]
+p person1.instance_variables # => [:@name, :@age]
+
+puts person1.get_info # => Name: Joe, age: 23
+
+p person0.instance_variables # => [:@name, :@age]
+p person1.instance_variables # => [:@name, :@age, :@additional_info]
+
+
+class Person
+  attr_reader :age
+  attr_accessor :name
+
+  def initialize (name, ageVar)
+    @name = name
+    self.age = ageVar
+    puts age
+  end
+
+  def age= (new_age)
+    @age = new_age unless new_age > 120
+  end
+end
+
+person2 = Person.new("John", 42) # => 42
+puts "My age is #{person2.age}"
+person2.age = 130
+puts person2.age
+
+
+class Test
+  def value
+    @value ||= 42
+  end
+
+  def value= (new_value)
+    @value = new_value
+  end
+end
+
+t = Test.new
+p t.value
+t.value = 23
+p t.value
+
+
+class Person
+  attr_reader :age
+  attr_accessor :name
+
+  def initialize (nage, age)
+    @name = name
+    self.age = age
+  end
+
+  def age= (new_age)
+    @age ||= 5
+    @age = new_age unless new_age > 120
+  end
+end
+
+person3 = Person.new("Jar", 130)
+p person3.age
+person3.age = 10
+p person3.age
+person3.age = 300
+p person3.age
