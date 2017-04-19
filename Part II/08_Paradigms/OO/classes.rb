@@ -59,6 +59,10 @@ max.name = "Max"
 
 printf "%s goes %s \n", max.name, max.bark()
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 # Ruby class can inherit from only one parent
 puts 4.class
 puts 4.class.superclass
@@ -66,6 +70,10 @@ puts 4.class.superclass.superclass
 puts 4.class.superclass.superclass.superclass
 puts 4.class.superclass.superclass.superclass.superclass
 puts 4.class.superclass.superclass.superclass.superclass.superclass
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 # open classes
 class NilClass
@@ -114,6 +122,10 @@ puts "Open classes with USA metrics"
 puts 10.miles.back
 puts 2.feet.forward
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 # method_missing
 class Roman
   def self.method_missing name, *args
@@ -136,6 +148,10 @@ puts Roman.X
 puts Roman.XC
 puts Roman.XII
 puts Roman.X
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 class Person
@@ -161,6 +177,10 @@ puts person1.get_info # => Name: Joe, age: 23
 p person0.instance_variables # => [:@name, :@age]
 p person1.instance_variables # => [:@name, :@age, :@additional_info]
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 class Person
   attr_reader :age
@@ -182,6 +202,10 @@ puts "My age is #{person2.age}"
 person2.age = 130
 puts person2.age
 
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 class Test
   def value
@@ -197,6 +221,10 @@ t = Test.new
 p t.value
 t.value = 23
 p t.value
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 class Person
@@ -220,3 +248,317 @@ person3.age = 10
 p person3.age
 person3.age = 300
 p person3.age
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+class MathFunctions
+  def self.double(var) # 1. Using self
+   times_called
+   var * 2
+  end
+
+  class << self # 2. Using << self
+    def times_called
+      @@times_called ||= 0  # @@ means class variables
+      @@times_called += 1
+    end
+  end
+end
+def MathFunctions.triple(var) # 3. Outside of the class
+  times_called
+  var * 3
+end
+
+# No instance created!
+puts MathFunctions.double 5 # => 10
+puts MathFunctions.triple(3) # => 9
+puts MathFunctions.times_called # => 3
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# No multiple inheritance
+# Mixins are used instead
+
+
+class Dog # implicitly inherits from Object
+  def to_s
+    "Dog"
+  end
+
+  def bark
+    "barks loudly"
+  end
+end
+
+class SmallDog < Dog # Denotes inheritance
+  def bark # override
+    "barks quietly"
+  end
+end
+
+dog = Dog.new # (btw, new ia a class method)
+small_dog = SmallDog.new
+puts "#{dog}1 #{dog.bark}"
+puts "#{small_dog}2 #{small_dog.bark}"
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Modules as Namespaces
+module Sports
+  class Match
+    attr_accessor :score
+  end
+end
+
+module Patterns
+  class Match
+    attr_accessor :complete
+  end
+end
+
+match1 = Sports::Match.new
+match1.score = 45
+puts match1.score # => 45
+
+match2 = Patterns::Match.new
+match2.complete = true
+puts match2.complete # => true
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Module as Mixin/Mix-in
+module SayMyName
+  attr_accessor :name
+  def print_name
+    puts "Name: #{@name}"
+  end
+end
+
+class AnotherPerson
+  include SayMyName
+end
+
+class Company
+  include SayMyName
+end
+
+person = AnotherPerson.new
+person.name = "Bruce"
+person.print_name # => Name: Bruce
+
+company = Company.new
+company.name = "Name: Some fancy company name here"
+company.print_name # => Soma fancy company name here
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# For example, in a file named: player.rb
+class Player
+
+  attr_reader :name, :age, :skill_level
+
+  def initialize (name, age, skill_level)
+    @name = name
+    @age = age
+    @skill_level = skill_level
+  end
+
+  def to_s
+    "<#{name}: #{skill_level}(SL), #{age}(AGE)>"
+  end
+
+end
+
+
+# Now, supose another file named: team.rb
+
+class Team
+  include Enumerable
+
+  attr_accessor :name, :players
+
+  def initialize (name)
+    @name = name
+    @players = []
+  end
+
+  def add_players (*players) # remember splats ?
+    @players += players
+  end
+
+  def to_s
+    "#{@name} team: #{players.join(", ")}"
+  end
+
+  def each
+    @players.each { |player| yield player }
+  end
+end
+
+# require_relative allows importing other .rb files
+require_relative 'player' # relative to the current ruby code `this`
+require_relative 'team'
+
+player1 = Player.new("A", 13, 5)
+player2 = Player.new("B", 15, 4.5)
+player3 = Player.new("C", 21, 5)
+player4 = Player.new("D", 14, 5)
+player5 = Player.new("E", 16, 3)
+
+red_team = Team.new("Red")
+red_team.add_players(player1, player2, player3, player4, player5) # splat again
+
+# select only players between 14 and 20 and reject any player below 4.5
+# skil-level
+elig_players = red_team.select { |player| (14..20) === player.age }
+                       .reject { |player| player.skill_level < 4.5 }
+puts elig_players
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Scope
+#
+# Scope: Variables
+# Methods and Classes begin new_scope for variables
+# Outer scope variables do not get carried over to the inner scope
+# User `local_variables` method to see which variables are in (and which are
+# not in) the current scope
+
+v1 = "Outside"
+
+class MyClass
+  def my_method
+    # p v1 EXCEPTION THROWN - no such variable exists
+    v1 = "inside"
+    p v1
+    p local_variables
+  end
+end
+
+p v1 # => Outside
+obj = MyClass.new
+obj.my_method # => inside
+              # => [:v1]
+p local_variables # Okay, there's a little bit messy
+p self # main
+
+# Scope: Constants
+# Constants is any reference that begins with uppercase, including classes and
+# modules
+# Constants' scope rules are different than variable scope rules
+# Inner scope can see constants defined in outer scope and can also override
+# outer constants (value remains unchanged outside!)
+
+module AnotherTest
+  PI = 3.14
+
+  class Test2
+    def what_is_pi
+      puts PI
+    end
+  end
+end
+
+AnotherTest::Test2.new.what_is_pi
+
+module MyModule
+  MyConstant = "Outer Constant"
+
+  class AnotherMyClass
+    puts MyConstant
+    MyConstant = 'Inner Constant'
+    puts MyConstant
+  end
+
+  puts MyConstant
+end
+
+# Scope: Block
+# Block inherit outer scope
+# Block is a Closure
+#   Remembers the context in which it was defined and uses that context
+#   wheneverit is called
+
+class BankAccount
+  attr_accessor :id, :amount
+
+  def initialize (id, amount)
+    @id = id
+    @amount = amount
+  end
+end
+
+acct1 = BankAccount.new(123, 200)
+acct2 = BankAccount.new(321, 100)
+acct3 = BankAccount.new(421, -100)
+accts = [acct1, acct2, acct3]
+
+total_sum = 0
+accts.each do |eachAcct|
+  total_sum += eachAcct.amount
+end
+
+puts total_sum # => 200
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# Block: Local Scope
+
+arr = [5, 4, 1]
+cur_number = 10
+
+arr.each do |cur_number|
+  some_var = 10 # NOT available outside the block
+  print cur_number.to_s + " " # => 5 4 1 
+end
+
+puts
+puts cur_number # => 10
+
+adjustment = 5
+arr.each do |cur_number; adjustment| # here adjustment is treated as local var
+  adjustment = 10
+  print "#{cur_number + adjustment} " # => 15 14 11 
+end
+
+puts
+puts adjustment # => (Not affected by the block)
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
