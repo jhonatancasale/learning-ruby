@@ -542,13 +542,165 @@ puts adjustment # => (Not affected by the block)
 puts
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-puts
-#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+## Encapsulation
+# By default ALL methods are public
+
+class Car
+  def initialize(speed, confort)
+    @rating = speed * confort
+  end
+
+  # Can't SET rating from outside
+  def rating
+    @rating
+  end
+end
+
+puts Car.new(4, 5).rating() # => 20
+
+# 2 ways to define
+
+class MyAlgorithm
+  private
+    def test1
+      "Private"
+    end
+  protected
+    def test2
+      "Protected"
+    end
+  public
+    def test3
+      "Public"
+    end
+end
+
+class Another
+  def test1
+    "Private, as declared later on"
+  end
+
+  private :test1 #, test2, test2
+end
+
+class YetAnotherPerson
+  def initialize(age)
+    self.age = age # legal assignment
+    puts my_age
+    #puts self.my_age  # ILLEGAL
+  end
+
+  private
+
+    def my_age
+      @age
+    end
+
+    def age=(age)
+      @age = age
+    end
+end
+
+YetAnotherPerson.new(25) # => 25
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 puts
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+## Unit Testing
+# in an external file calculator.rb
+class Calculator
+  attr_reader :name
+
+  def initialize(name)
+    @name = name
+  end
+
+  def add(one, two)
+    one - two
+  end
+
+  def subtract(one, two)
+    one + two
+  end
+
+  def divide(one, two)
+    one / two
+  end
+end
+
+# in an external file calculator_test.rb
+#require 'test/unit'
+#require_relative 'Calculator'
+#
+#class CalculatorTest < Test::Unit::TestCase
+#
+#  def setup
+#    @calc = Calculator.new('test')
+#  end
+#
+#  def test_addition
+#    assert_equal 4, @calc.add(2, 2)
+#  end
+#
+#  def test_subtraction
+#    assert_equal 2, @calc.subtract(4, 2)
+#  end
+#
+#  def test_division
+#    assert_equal 2, @calc.divide(4, 2)
+#  end
+#
+#end
+
+
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+puts
+#%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+## RSpec
+#gem install rspec
+#Fetching: diff-lcs-1.3.gem (100%)
+#Successfully installed diff-lcs-1.3
+#Fetching: rspec-support-3.5.0.gem (100%)
+#Successfully installed rspec-support-3.5.0
+#Fetching: rspec-mocks-3.5.0.gem (100%)
+#Successfully installed rspec-mocks-3.5.0
+#Fetching: rspec-expectations-3.5.0.gem (100%)
+#Successfully installed rspec-expectations-3.5.0
+#Fetching: rspec-core-3.5.4.gem (100%)
+#Successfully installed rspec-core-3.5.4
+#Fetching: rspec-3.5.0.gem (100%)
+#Successfully installed rspec-3.5.0
+#Parsing documentation for diff-lcs-1.3
+#Couldn't find file to include 'Contributing.rdoc' from README.rdoc
+#Couldn't find file to include 'License.rdoc' from README.rdoc
+#Installing ri documentation for diff-lcs-1.3
+#Parsing documentation for rspec-support-3.5.0
+#Installing ri documentation for rspec-support-3.5.0
+#Parsing documentation for rspec-mocks-3.5.0
+#Installing ri documentation for rspec-mocks-3.5.0
+#Parsing documentation for rspec-expectations-3.5.0
+#Installing ri documentation for rspec-expectations-3.5.0
+#Parsing documentation for rspec-core-3.5.4
+#Installing ri documentation for rspec-core-3.5.4
+#Parsing documentation for rspec-3.5.0
+#Installing ri documentation for rspec-3.5.0
+#Done installing documentation for diff-lcs, rspec-support, rspec-mocks, rspec-expectations, rspec-core, rspec after 19 seconds
+#6 gems installed
+
+## rspec --init
+# create   .rspec
+# create   spec/spec_helper.rb
+# rspec
+# Matchers examples
+# be_true / be_false
+# eq 3
+# raise_error(SomeError)
+# be_predicate - boolean
+# rspec --format documentation
+
 
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 puts
